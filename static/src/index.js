@@ -3,6 +3,10 @@ import { hits } from "./physics.js"
 
 const sprites = {}
 
+var combo_counter = 0
+
+window.combo_inc = () => combo_counter++
+
 const p1 = ch.create({
   x: Math.floor((ch.RIGHT_SIDE - ch.LEFT_SIDE) * 0.4),
   key: {
@@ -34,7 +38,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(700, 400)
+  createCanvas(1400, 800)
   noSmooth()
 
   sprites.character.loadPixels()
@@ -105,8 +109,16 @@ const draw_hp_bar = ({ hp, max_hp }, start_x) => {
 
 function draw() {
   push()
-  background(250)
-  scale(2)
+  background(200, 200, 230)
+  scale(3)
+
+  noStroke()
+  fill("teal")
+  rect(0, ch.GROUND_Y + 20, 1000, 700)
+  fill("gray")
+  rect(0, 0, ch.LEFT_SIDE + 5, ch.GROUND_Y + 32)
+  fill("gray")
+  rect(ch.RIGHT_SIDE + 27, 0, 100, ch.GROUND_Y + 32)
 
   if (freeze_i <= 0) {
     update_flip()
@@ -120,7 +132,7 @@ function draw() {
   ch.draw(p2)
 
   draw_hp_bar(p1, 20)
-  draw_hp_bar(p2, 200)
+  draw_hp_bar(p2, 300)
 
   debug_draws.forEach((f) => f())
 

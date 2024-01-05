@@ -10,7 +10,7 @@ import { sprite, frame } from "./render.js"
 import { hits, overlap } from "./physics.js"
 
 export const GROUND_Y = 150
-export const RIGHT_SIDE = 300
+export const RIGHT_SIDE = 400
 export const LEFT_SIDE = 10
 
 const idle = { row: 0, len: 2, speed: 10 }
@@ -23,11 +23,18 @@ const jump_kick = { row: 7, len: 1, speed: 10 }
 const jumping_damage = { row: 9, len: 1, speed: 10 }
 const standing_block = { row: 10, len: 1, speed: 10 }
 const knocked_out = { row: 11, len: 2, speed: 10 }
+const kick = { row: 12, len: 4, speed: 5 }
+
+const holding_forward = (c) =>
+  c.intent.walk_direction == (c.right_side ? -1 : 1)
 
 const wants_to_jump = (c) => c.intent.jump
 const wants_to_crouch = (c) => c.intent.crouch
 // 3 frame buffer
-const wants_to_punch = (c) => c.held_intent.punch < 3 && c.intent.punch
+const wants_to_punch = (c) =>
+  !holding_forward(c) && c.held_intent.punch < 3 && c.intent.punch
+const wants_to_kick = (c) =>
+  holding_forward(c) && c.held_intent.punch < 3 && c.intent.punch
 
 const set_state = (c, state) => {
   if (c.state.exit) {
@@ -54,6 +61,7 @@ const blockstun_state = {}
 const jump_kick_state = {}
 const win_state = {}
 const knocked_out_state = {}
+const kick_state = {}
 
 Object.assign(knocked_out_state, {
   init: (c) => (c.current_anim = knocked_out),
@@ -83,12 +91,12 @@ const try_to_hit = (c, enemy, atk_data) => {
       c.can_hit = false
       if (enemy.blocking) {
         enemy.blockstun = atk_data.blockstun
-        enemy.pushback = atk_data.pushback
+        enemy.pushback = atk_data.pushback * 2
         set_state(enemy, blockstun_state)
         freeze(atk_data.block_freeze)
       } else {
         enemy.hitstun = atk_data.hitstun
-        enemy.pushback = atk_data.pushback
+        enemy.pushback = atk_data.pushback * 0.5
         set_state(enemy, hitstun_state)
         enemy.hp -= atk_data.damage
         if (enemy.hp <= 0) {
@@ -111,7 +119,7 @@ Object.assign(punch_state, {
     [
       (c) => c.state_time >= 5,
       (c) => {
-        c.recovery = 5
+        c.recovery = 8
         set_state(c, recovery_state)
       },
     ],
@@ -119,12 +127,42 @@ Object.assign(punch_state, {
   update: (c, enemy) =>
     try_to_hit(c, enemy, {
       damage: 5,
-      hitstun: 10,
+      hitstun: 15,
       blockstun: 5,
       freeze: 5,
       block_freeze: 3,
       pushback: 5,
     }),
+})
+
+Object.assign(kick_state, {
+  init: (c) => {
+    c.current_anim = kick
+    c.can_hit = true
+  },
+  transitions: [
+    [
+      (c) => c.state_time >= 20,
+      (c) => {
+        c.recovery = 20
+        set_state(c, recovery_state)
+      },
+    ],
+  ],
+  update: (c, enemy) => {
+    if (c.state_time >= 10 && c.state_time < 15) {
+      c.x += 3 * (c.right_side ? -1 : 1)
+    }
+
+    try_to_hit(c, enemy, {
+      damage: 13,
+      hitstun: 25,
+      blockstun: 10,
+      freeze: 10,
+      block_freeze: 7,
+      pushback: 10,
+    })
+  },
 })
 
 const land_transition = [
@@ -165,10 +203,10 @@ Object.assign(jump_kick_state, {
 })
 
 Object.assign(recovery_state, {
-  init: (c) => (c.current_anim = punch),
+  init: (c) => (c.current_anim = kick),
   transitions: [[(c) => c.recovery <= 0, idle_state]],
   update: (c) => {
-    c.state_time = 0
+    c.state_time = 15
     c.recovery--
   },
 })
@@ -196,7 +234,7 @@ Object.assign(hitstun_state, {
     }
 
     if (c.state_time >= 1) {
-      c.state_time = 1
+      c.state_time = 2
     }
     c.hitstun--
   },
@@ -239,7 +277,10 @@ Object.assign(jump_state, {
     c.time_since_left_ground = 0
     c.fall_speed = 1
   },
-  transitions: [land_transition, [wants_to_punch, jump_kick_state]],
+  transitions: [
+    land_transition,
+    [(c) => wants_to_punch(c) || wants_to_kick(c), jump_kick_state],
+  ],
   update: (c) => {
     c.x += c.jump_direction
     c.time_since_left_ground++
@@ -260,6 +301,7 @@ Object.assign(idle_state, {
     [(c) => c.hp <= 0, knocked_out_state],
     [wants_to_jump, jump_state],
     [wants_to_punch, punch_state],
+    [wants_to_kick, kick_state],
     [wants_to_crouch, crouch_state],
     [(c) => c.intent.walk_direction != 0, walk_state],
   ],
@@ -271,6 +313,7 @@ Object.assign(walk_state, {
   transitions: [
     [wants_to_jump, jump_state],
     [wants_to_punch, punch_state],
+    [wants_to_kick, kick_state],
     [wants_to_crouch, crouch_state],
     [(c) => c.intent.walk_direction === 0, idle_state],
   ],
@@ -319,6 +362,14 @@ export const create = ({ x, y, current_anim, sheet, key } = {}) => {
 }
 
 export const draw = (c) => {
+  fill(0, 0, 0, 80)
+  ellipse(
+    c.x + 13 + (c.right_side ? 6 : 0),
+    GROUND_Y + 30,
+    18 - (GROUND_Y - c.y) * 0.2,
+    8 - (GROUND_Y - c.y) * 0.1
+  )
+
   frame(c.sheet, c.x, c.y, ...sprite(c.current_anim, which_frame(c)), {
     flipped: c.flipped,
   })
