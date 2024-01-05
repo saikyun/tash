@@ -41,10 +41,10 @@ export const overlap = (c, enemy, ohx, ohy) => {
   const hx = ohx + c.x - enemy.x
   const hy = ohy + c.y - enemy.y
   if (hx < 0 || hx > 32) {
-    return
+    return false
   }
-  if (hy < 0) {
-    return
+  if (hy < 0 || hy > 32) {
+    return false
   }
 
   if (
@@ -55,4 +55,6 @@ export const overlap = (c, enemy, ohx, ohy) => {
   ) {
     return true
   }
+
+  return false
 }
