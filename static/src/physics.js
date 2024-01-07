@@ -1,8 +1,8 @@
 export const hits = (img, tx, ty, { w, h, flipped } = {}) => {
   const pixels = img.pixels
 
-  w = w || 32
-  h = h || 32
+  w = w || SPRITE_SIZE
+  h = h || SPRITE_SIZE
   flipped = flipped === undefined ? false : flipped
 
   const hs = []
@@ -28,7 +28,7 @@ export const hits = (img, tx, ty, { w, h, flipped } = {}) => {
       //   alpha
       // )
       if (alpha) {
-        hs.push([flipped ? 32 - (x - tx * w) : x - tx * w, y - ty * h])
+        hs.push([flipped ? SPRITE_SIZE - (x - tx * w) : x - tx * w, y - ty * h])
       }
     }
   }
@@ -40,17 +40,18 @@ export const overlap = (c, enemy, ohx, ohy) => {
   // console.log(hx, hy)
   const hx = ohx + c.x - enemy.x
   const hy = ohy + c.y - enemy.y
-  if (hx < 0 || hx > 32) {
+  if (hx < 0 || hx > SPRITE_SIZE) {
     return false
   }
-  if (hy < 0 || hy > 32) {
+  if (hy < 0 || hy > SPRITE_SIZE) {
     return false
   }
 
   if (
     c.sheet.get(
-      (enemy.flipped ? 32 - hx : hx) + (enemy.i % enemy.current_anim.len) * 32,
-      hy + 32 * enemy.current_anim.row
+      (enemy.flipped ? SPRITE_SIZE - hx : hx) +
+        (enemy.i % enemy.current_anim.len) * SPRITE_SIZE,
+      hy + SPRITE_SIZE * enemy.current_anim.row
     )[3] > 0
   ) {
     return true

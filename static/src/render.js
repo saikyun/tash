@@ -1,6 +1,6 @@
 export const frame = (sheet, dx, dy, tx, ty, { w, h, flipped } = {}) => {
-  w = w || 32
-  h = h || 32
+  w = w || SPRITE_SIZE
+  h = h || SPRITE_SIZE
   flipped = flipped === undefined ? false : flipped
   push()
   translate(dx, dy)
