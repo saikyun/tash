@@ -1,0 +1,75 @@
+{ "frames": {
+   "tri-artillerist-skibidi-toilet #trltrlt.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "tri-artillerist-skibidi-toilet #propeller 0.aseprite": {
+    "frame": { "x": 0, "y": 64, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "tri-artillerist-skibidi-toilet #propeller 1.aseprite": {
+    "frame": { "x": 64, "y": 64, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "tri-artillerist-skibidi-toilet #propeller 2.aseprite": {
+    "frame": { "x": 128, "y": 64, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "tri-artillerist-skibidi-toilet #crouching.aseprite": {
+    "frame": { "x": 0, "y": 128, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "tri-artillerist-skibidi-toilet #standing_damage.aseprite": {
+    "frame": { "x": 0, "y": 192, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-arm64",
+  "format": "RGBA8888",
+  "size": { "w": 192, "h": 256 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "trltrlt", "from": 0, "to": 0, "direction": "forward" },
+   { "name": "propeller", "from": 1, "to": 3, "direction": "forward" },
+   { "name": "crouching", "from": 4, "to": 4, "direction": "forward" },
+   { "name": "standing_damage", "from": 5, "to": 5, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "inner_rpg", "opacity": 255, "blendMode": "normal" },
+   { "name": "propeller", "opacity": 255, "blendMode": "normal" },
+   { "name": "toilet_top", "opacity": 255, "blendMode": "normal" },
+   { "name": "head", "opacity": 255, "blendMode": "normal" },
+   { "name": "toilet_bottom", "opacity": 255, "blendMode": "normal" },
+   { "name": "outer_rpg", "opacity": 255, "blendMode": "normal" },
+   { "name": "bottom_rpg", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

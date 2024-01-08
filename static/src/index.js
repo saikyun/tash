@@ -1,4 +1,6 @@
 import * as ch from "./character.js"
+import * as large_speakerman from "./large_speakerman.js"
+import * as tri_rpg from "./tri_rpg.js"
 import { hits } from "./physics.js"
 
 var training_mode = true
@@ -12,47 +14,58 @@ var combo_timer = 0
 window.combo_inc = () => combo_counter++
 window.combo_reset = () => (combo_counter = 0)
 
+const left_controls = {
+  punch: "u",
+  special: "i",
+  dash: "d",
+  left: "a",
+  right: "e",
+  crouch: "o",
+  jump: "ä",
+  restart: "Escape",
+}
+
+const right_controls = {
+  punch: "w",
+  special: "m",
+  dash: "b",
+  left: "ArrowLeft",
+  right: "ArrowRight",
+  crouch: "ArrowDown",
+  jump: "ArrowUp",
+  restart: "Escape",
+}
+
 const p1 = ch.create({
+  specific_data: large_speakerman.specific_data(),
   meter: training_mode ? 100 : 25,
-  x: Math.floor((ch.RIGHT_SIDE - ch.LEFT_SIDE) * 0.4),
-  key: {
-    punch: "u",
-    special: "i",
-    dash: "d",
-    left: "a",
-    right: "e",
-    crouch: "o",
-    jump: "ä",
-    restart: "Escape",
-  },
+  x: Math.floor((ch.RIGHT_SIDE - ch.LEFT_SIDE) * 0.6),
+  key: right_controls,
 })
 
 const p2 = ch.create({
+  specific_data: tri_rpg.specific_data(),
   meter: training_mode ? 100 : 25,
-  x: Math.floor((ch.RIGHT_SIDE - ch.LEFT_SIDE) * 0.6),
-  key: {
-    punch: "w",
-    special: "m",
-    dash: "b",
-    left: "ArrowLeft",
-    right: "ArrowRight",
-    crouch: "ArrowDown",
-    jump: "ArrowUp",
-    restart: "Escape",
-  },
+  x: Math.floor((ch.RIGHT_SIDE - ch.LEFT_SIDE) * 0.4),
+  key: left_controls,
 })
 
 function preload() {
-  sprites.character = loadImage("./assets/large-speakerman-sheet.png")
-  p1.sheet = sprites.character
-  p2.sheet = sprites.character
+  sprites.large_speakerman = loadImage("./assets/large-speakerman-sheet.png")
+  sprites.tri_artillerist_skibidi = loadImage(
+    "./assets/tri-artillerist-skibidi-toilet-sheet.png"
+  )
+  p1.sheet = sprites.large_speakerman
+  p2.sheet = sprites.tri_artillerist_skibidi
 }
 
 function setup() {
   createCanvas(1400, 800)
   noSmooth()
 
-  sprites.character.loadPixels()
+  for (var k in sprites) {
+    sprites[k].loadPixels()
+  }
 }
 
 function keyPressed() {
