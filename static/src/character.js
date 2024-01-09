@@ -1,5 +1,5 @@
 import { sprite, frame } from "./render.js"
-import { hits, overlap } from "./physics.js"
+import { hits, overlap, box_overlap } from "./physics.js"
 
 export const GROUND_Y = 150
 export const RIGHT_SIDE = 400
@@ -9,6 +9,8 @@ export const holding_forward = (c) =>
   c.intent.walk_direction == (c.right_side ? -1 : 1)
 
 export const holding_forward_mult = (c) => (holding_forward(c) ? 1 : -1)
+export const right_side_mult = (c) => (c.right_side ? -1 : 1)
+export const flipped_mult = (c) => (c.flipped ? -1 : 1)
 
 export const is_grounded = (c) => c.y >= GROUND_Y
 
@@ -225,6 +227,10 @@ export const draw = (c) => {
   frame(c.sheet, c.x, c.y, ...sprite(c.current_anim, which_frame(c)), {
     flipped: c.flipped,
   })
+
+  const [x, y, w, h] = c.hurtbox(c)
+  fill(200, 40, 40, 100)
+  rect(c.x + x, c.y + y, w, h)
 }
 
 export const key = (c, keyCode) => {
@@ -295,22 +301,16 @@ const update_state = (c, enemy) => {
 export const update = (c, enemy, flipped) => {
   update_state(c, enemy)
 
-  const hs = hits(
-    c.sheet,
-    ...sprite(c.current_anim, Math.floor(c.i / c.current_anim.speed)),
-    { flipped: c.flipped }
-  )
-
-  for (var [x, y] of hs) {
-    while (overlap(c, enemy, x, y)) {
-      enemy.x += enemy.right_side ? 1 : -1
-      if (enemy.x > RIGHT_SIDE) {
-        c.x += c.right_side ? 1 : -1
-      }
-      if (enemy.x < LEFT_SIDE) {
-        c.x += c.right_side ? 1 : -1
-      }
-      break
+  var alternate = false
+  while (box_overlap(c, enemy, c.hurtbox(c), enemy.hurtbox(enemy))) {
+    if (alternate) {
+      c.x -= right_side_mult(c)
+    } else {
+      enemy.x -= right_side_mult(enemy)
+    }
+    alternate = !alternate
+    if (enemy.x > RIGHT_SIDE || enemy.x < LEFT_SIDE) {
+      c.x -= right_side_mult(c)
     }
   }
 

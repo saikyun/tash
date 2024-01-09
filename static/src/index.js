@@ -37,7 +37,8 @@ const right_controls = {
 }
 
 const p1 = ch.create({
-  specific_data: large_speakerman.specific_data(),
+  //specific_data: large_speakerman.specific_data(),
+  specific_data: tri_rpg.specific_data(),
   meter: training_mode ? 100 : 25,
   x: Math.floor((ch.RIGHT_SIDE - ch.LEFT_SIDE) * 0.6),
   key: right_controls,
@@ -56,6 +57,7 @@ function preload() {
     "./assets/tri-artillerist-skibidi-toilet-sheet.png"
   )
   p1.sheet = sprites.large_speakerman
+  p1.sheet = sprites.tri_artillerist_skibidi
   p2.sheet = sprites.tri_artillerist_skibidi
 }
 
@@ -232,6 +234,9 @@ function draw() {
 
   pop()
 }
+
+ch.set_state(p1, tri_rpg.shoot_state)
+ch.set_state(p2, tri_rpg.shoot_state)
 
 window.preload = preload
 window.setup = setup

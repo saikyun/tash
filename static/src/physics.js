@@ -47,15 +47,31 @@ export const overlap = (c, enemy, ohx, ohy) => {
     return false
   }
 
-  if (
-    c.sheet.get(
-      (enemy.flipped ? SPRITE_SIZE - hx : hx) +
-        (enemy.i % enemy.current_anim.len) * SPRITE_SIZE,
-      hy + SPRITE_SIZE * enemy.current_anim.row
-    )[3] > 0
-  ) {
-    return true
+  const hb = enemy.hurtbox && enemy.hurtbox(enemy)
+  if (hb) {
+    return (
+      hx >= hb[0] && hx < hb[0] + hb[2] && hy >= hb[1] && hy < hb[1] + hb[3]
+    )
+  } else {
+    if (
+      c.sheet.get(
+        (enemy.flipped ? SPRITE_SIZE - hx : hx) +
+          (enemy.i % enemy.current_anim.len) * SPRITE_SIZE,
+        hy + SPRITE_SIZE * enemy.current_anim.row
+      )[3] > 0
+    ) {
+      return true
+    }
   }
 
   return false
+}
+
+export const box_overlap = (c1, c2, [x1, y1, w1, h1], [x2, y2, w2, h2]) => {
+  return (
+    c1.x + x1 + w1 >= c2.x + x2 &&
+    c1.x + x1 < c2.x + x2 + w2 &&
+    c1.y + y1 + h1 >= c2.y + y2 &&
+    c1.y + y1 < c2.y + y2 + h2
+  )
 }
